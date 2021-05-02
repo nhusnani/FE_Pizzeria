@@ -1,0 +1,175 @@
+defining URLs, writing views, and writing templates
+this project we always start by defining the URL pattern
+A url pattern describes the way the URL is laid out, and also tells DJango what to look for when matching a browser request with a site URL so it knows which page to return
+
+
+each url then maps to a particular view
+the view function retrieves and processes the data needed for that page, often renders page using a template, which contains overall structure of the page 
+
+define the URL for the home page, write its view function, and create a simple template
+
+the template defines what the page should look like, and django fills in the relevant data each time the page is requested
+
+a template allows you to access any data provided by the view
+our view for home page provided no data, so the home page template is pretty simple
+
+now when you request project's base url, you should see home page
+django takes the requested url, and that url matches pattern '', then django calls the function views.index() which will render the page using the template contained in index.html
+
+
+building additional pages
+for each page, specify url pattern, write a view function, and write a template 
+create a base template that all templates in the project cna inherit from
+
+template inheritance --------
+some elemnts will always need to be repeated on each page
+rather than writing elements directly into each page, you can write a base template containing the repeated elements and then have each page inherit from the base
+
+parent template  --- base.html 
+in the same directory as index.html 
+this file will contain elements common to all pages; every other tempalte will inherit from base.html 
+the only element we want to repeat on each page is title at the top
+because include template on every page, make the title a link to the home page
+
+<p> 
+    <a href="{% url 'pizzas:index ' %}">Pizzas</a>
+</p>
+
+this is a template tag ^ --> generates info to be displayed on a page 
+first part creates a paragraph containing name of project which also acts as a home page link. Our template tag {% url 'pizzas:index' %} generates a url matching the url pattern define in pizzas/urls.py with the name index
+pizzas is the namespace and idnex is uniquely named url pattern, namespace comes from value assigned to app_name in pizzas/urls.py file
+having a template tag generate the URL for us makes it much easier to keep our links up to date 
+we only need to change the url pattern in urls.py, and django will automatically insert the updated url next time the page is requested
+
+
+every page in our project will inherit from base.html, so from now on, every page will have a link back to the home page 
+
+{% block content %}{% endblock content%}
+^ this is a pair of block tags in base.html. This block, named content, is a placeholder; the child template willd efine the kind of information that goes in the content block
+a child template doesn't have ot define every block from its parent, so you can reserve space in parent templates for as many blocks as you like, the child template uses only as many as it requires
+
+rewrite index.html to inherit from base.html
+
+new index.html -----
+{% extends "pizzas/base.html" %}
+{% block content %}
+<p>Pizzas Homepage</p>
+<p>Pizzas on pizzas on pizzas! New York City</p>
+{% endblock content %}
+
+A child template must have {% extends %} tag on the first line ot tell django which parent template to inherit from
+the file base.html is part of pizzas, so we include pizzas, in the apth to the arent template
+this line pulls up everything contained in base.html template and allow index.html to define what goes int he space reserved by the content block
+in a child template, we only need to include content that is unique to that page, simplifies each template, and makes easier to modify site
+
+to modify an element common to many pages, you only need to modify the parent template
+
+
+-------making a available pizzas page ---
+general available pizza page and a page to display the pizza and the pizza toppings (add a picture of each pizza)
+
+first define the url for the topics page 
+lets use http://localhost:8000/availablepizzas/ 
+modify in pizzas/urls.py
+
+{% extends "pizzas/base.html" %}
+{% block content %}
+
+<p>Available Pizzas</p>
+<ul>
+    {% for pizza in pizzas %}
+    <li>{{ topic }}</li>
+    {% empty %}
+    <li>No topics have been added yet.</li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
+
+use the extends tag to inherit from base.html jsut as index template does, then open a content block
+body of this page contains bulleted list of topics that have been entered --> unordered list <ul></ul>
+anoteher template tag that has a for loop which loops through pizzas from context dictionary
+end for tag to end loops in html
+turn each pizza into an item in the bulleted list 
+print variable in template, wrap in doulbe braces to indicate to django using template variable 
+
+<li> indicates list item, and empty tag tell django that if there are no items in the list, print messae informing user no pizzas have been added yet
+
+
+
+------pizza.html -----------------------
+{% extends 'pizzas/base.html' %}
+{% block content %}
+
+<p> Pizza: {{ pizza }}</p>
+
+<p>Toppings:</p>
+<ul>
+    {% for topping in toppings %}
+    <li>
+        <p>{{ topping.date_added|date:'M d, Y H:i' }}</p>
+        <p>{{ topping.text|linebreaks }}</p>
+    </li>
+    {% empty %}
+    <li>There are no toppings for this pizza yet.</li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
+
+extend base html. Then show pizza thats currently being displayed, which is stored in template variable {{pizza}}
+the variable pizza is available because its included in the context dictionary. Then start bullet list to show each of the entries and loop through them like we did pizzas 
+each bullet lists two pieces of info: timestamp and fullt ext of each entry 
+for timestamp, we display the value attribute date_added 
+vertical line | represents a template filter - a function that modifies the value in a template variable, this gives specifc format for how time is displayed
+linebreaks ensures that long text entries include line break in a format understood by browsers
+
+
+
+---------new updated availpizzas.html 
+{% extends "pizzas/base.html" %}
+{% block content %}
+
+<p>Available Pizzas</p>
+<ul>
+    {% for pizza in availpizzas %}
+    <li>
+        <a href="{% url 'pizzas:pizza' pizza.id %}">{{ pizza }}</a>
+    </li>>
+    {% empty %}
+    <li>No pizzas have been added yet.</li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
+
+use url tempalte tag to generate proper link based on url pattern in pizzas with name pizza.
+This url pattern requires a pizza_id argument, so we add the attribute pizza.id to the url template tag
+now each pizza in list of pizzas is a link to a pizza page
+
+
+
+---------GET and POST requests--------
+GET requests for pages that only read data from server
+POST requests when user needs ot submit info through a form 
+
+new_comment() function takes the request object as a parameter. When user initially requests this page, their browser will send a GET request. Once the user has filled out
+and submitted the form, their browser will submit a POST request. Depending on the request, we will know whether the user is requesting a blank form (a GET request) or asking us to process a completed form (a POST request)
+
+
+-------new_comment.html ------
+{% extends "pizzas/base.html" %}
+
+{% block content %}
+<p><a href="{% url 'pizzas:pizza' pizza.id %}">{{ pizza }}</a></p>
+
+<p>Add a new comment:</p>
+<form action="{% url 'pizzas:new_comment' pizza.id %}" method='post'>
+    {% csrf_token %} 
+    {{ form.as_p}}
+    <button name='submit'>Add comment</button>
+</form>
+{% endblock content %}
+
+show pizza at top of page, so user can see which pizza they're adding comment to. Pizza also acts as a link back to the main page for that pizza. 
+form action argument includes pizza_id value in URL, so the view function can associate the new comment with correct pizza

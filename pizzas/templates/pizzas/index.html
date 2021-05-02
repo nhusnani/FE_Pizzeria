@@ -1,0 +1,10 @@
+<body style="background-color: rgb(247, 169, 1);"></body>
+{% extends "pizzas/base.html" %}
+
+{% block content %}
+<p>Welcome to our Menu!</p>
+<p>We would love to serve you!</p>
+<p>
+    {% load static %} <img src="{% static 'pizzas/media/cover.jpg' %}" class="center" />
+</p>
+{% endblock content %}
