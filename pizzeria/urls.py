@@ -15,13 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
 
-#urls.py file represents project as a whole
-#urlpatterns variable includes sets of URLs from the apps in the project
-#the path ('admin/', admin.site.urls) defines all the urls that can be requested from the admin site
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pizzas.urls')), 
 ]
-#added a line to include module pizzas, then created another urls.py file in pizzas
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

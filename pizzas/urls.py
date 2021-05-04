@@ -11,19 +11,34 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
 app_name = 'pizzas'
-urlpatterns = [
-    #home page
-    path('', views.index, name='index'),
-    #page that shows available pizzas
-    path('availpizzas/', views.availpizzas, name = 'availpizzas'),
-    #detailed page for a single pizza
-    path('availpizzas/<int:pizza_id>/', views.pizza, name='pizza'),
-    #tells django to look for urls that have word availpizza after base url. Then <int:pizza_id matches an integer between two forward slashes and stores integer in pizza_id value argument
-    path('new_toppings/<int:pizza_id>/',views.new_toppings, name='new_toppings'),
-    #url pattern matches url where id is a number matching the pizza id, the code <int:pizza_id> captures numerical value and assigns it to variable pizza_id
-    #when matching url this pattern requested, django send the request and the topic's ID to new_comment() view function
-]
+urlpatterns = [path ('',views.index, name='index'), 
+path ('pizzas',views.pizzas, name='pizzas'),
+path ('pizzas/<int:pizza_id>/',views.pizza, name='pizza'),
+path ('pizzas/<int:pizza_id>/comment/',views.comment, name='comment'),]
+
+
 urlpatterns += staticfiles_urlpatterns()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #the actual url pattern is a call to the path() function, which takes 3 args: '' string that helps django route the current request. Django receives the requested URL and tries to route the request to a view
 #routes reqeust to a view by searching all the URL patterns we've defined to find one that matches the current request, so empty string matches the base URL
 #any other url won't match this pattern, and django will return an error page if the URL requested doesnt match any existing url patterns

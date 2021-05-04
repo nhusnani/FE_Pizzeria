@@ -4,26 +4,28 @@
 {% block content %}
 
 <p>Pizza: {{ pizza }}</p>
-{% load static %} <img src="{% static 'pizzas/media/hawaiian.jpg' %}" class="center" />
+<h2><img src="{{pizza.images.url}}" class="img-thumbnail" style="max-height:150px;" alt=""></h2>
+<div>Toppings</div>
 
-
-<p>Toppings:</p>
-<p>
-    <a href="{% url 'pizzas:new_toppings' pizza.id %}">Add a new comment</a>
-</p>
 <ul>
     {% for topping in toppings %}
     <li>
-        <p>{{ topping.date_added|date:'M d, Y H:i' }}</p>
-        <p>{{ topping }}</p>
+        <p>{{topping.date_added|date:'M d,Y H:i'}}</p>
+        <p>{{topping.name|linebreaks}}</p>
     </li>
     {% empty %}
-    <li>There are no toppings for this pizza yet.</li>
+    <li>No toppings for this pizza </li>
     {% endfor %}
 </ul>
-
-{% load static %} <img src="{% static 'pizzas/media/meatlover.jpg' %}" class="center" />
-
-
-
+<div>Comments</div>
+<ul>
+    {% for comment in comments %}
+    <li>
+        <p>{{ comment.text }}</p>
+        <p>{{comment.date_added|date:'M d,Y H:i'}}</p>
+    </li>
+    {% empty %}
+    <li>No Comments for this pizza </li>
+    {% endfor %}
+</ul>
 {% endblock content %}
