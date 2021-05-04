@@ -6,7 +6,7 @@
 <form action="{% url 'pizzas:comment' pizza_id %}" method='post'>
     {% csrf_token %}
     {{form.as_p}}
-    <button name="submit">ADD Comment</button>
+    <button name="submit">Add Comment</button>
 </form>
 
 {% endblock content %}

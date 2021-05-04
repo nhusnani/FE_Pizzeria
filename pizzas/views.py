@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Pizza, Toppings
-from .forms import forms
+from .forms import CommentForm
 
 def index(request):
     return render(request, 'pizzas/index.html')
@@ -22,10 +22,10 @@ def pizza(request, pizza_id):
    
 def comment(request, pizza_id):
     if request.method != 'POST':
-        form=forms.CommentForm()
+        form=CommentForm()
     else:
         pizza = Pizza.objects.get(id = pizza_id)
-        form=forms.CommentForm(data=request.POST)
+        form=CommentForm(data=request.POST)
         if form.is_valid():
             comment=form.save(commit=False)
             comment.pizza=pizza
