@@ -17,7 +17,7 @@ path ('pizzas/<int:pizza_id>/',views.pizza, name='pizza'),
 path ('pizzas/<int:pizza_id>/comment/',views.comment, name='comment'),]
 
 
-urlpatterns += staticfiles_urlpatterns()
+#urlpatterns += staticfiles_urlpatterns()
 
 
 

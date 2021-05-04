@@ -1,31 +1,31 @@
-<body style="background-color: rgb(247, 169, 1);"></body>
-
-{% extends 'pizzas/base.html' %}
+{% extends "pizzas/base.html" %}
 {% block content %}
 
-<p>Pizza: {{ pizza }}</p>
-<h2><img src="{{pizza.images.url}}" class="img-thumbnail" style="max-height:150px;" alt=""></h2>
-<div>Toppings</div>
+<body style="background-color:rgb(247, 169, 1)">
+    <p>Pizza: {{ pizza }}</p>
+    <h2><img src="{{pizza.image.url}}" class="img-thumbnail" style="max-height:250px;" alt=""></h2>
+    <div>Toppings</div>
+    <ul>
+        {% for topping in toppings %}
+        <li>
 
-<ul>
-    {% for topping in toppings %}
-    <li>
-        <p>{{topping.date_added|date:'M d,Y H:i'}}</p>
-        <p>{{topping.name|linebreaks}}</p>
-    </li>
-    {% empty %}
-    <li>No toppings for this pizza </li>
-    {% endfor %}
-</ul>
-<div>Comments</div>
-<ul>
-    {% for comment in comments %}
-    <li>
-        <p>{{ comment.text }}</p>
-        <p>{{comment.date_added|date:'M d,Y H:i'}}</p>
-    </li>
-    {% empty %}
-    <li>No Comments for this pizza </li>
-    {% endfor %}
-</ul>
+            <p>{{topping.name|linebreaks}}</p>
+            <p> {{topping.date_added|date:'M d,Y H:i'}}</p>
+        </li>
+        {% empty %}
+        <li>No toppings for this pizza </li>
+        {% endfor %}
+    </ul>
+    <div>Comments</div>
+    <ul>
+        {% for comment in comments %}
+        <li>
+            <p>{{ comment.text }}</p>
+            <p>{{comment.date_added|date:'M d,Y H:i'}}</p>
+        </li>
+        {% empty %}
+        <li>No Comments for this pizza </li>
+        {% endfor %}
+    </ul>
+</body>
 {% endblock content %}
